@@ -89,8 +89,7 @@ class Autoencoder(nn.Module):
         try:
             x_p = odeint_torch(self.SINDy_num, x0, t) 
         except AssertionError as error:
-            print(f"Caught an error while integrating model: {error}\
-                  \n This might mean that the model is numerically unstable.")
+            print(error)
             return None 
         return x_p
     
