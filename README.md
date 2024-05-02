@@ -13,3 +13,6 @@ I tried combining multiple approaches with the goals:
 <br>
 Particularly, I worked with the Rossler system with the parameters (a = 0.15, b = 0.2, c = 10) and time step $dt = \frac{\pi}{100}$ where I treated the x solution as the 1-dimensional time series.
 I applied the Minimum Mutual Information and the False Nearest Neighbors criteria on the time-delayed versions of x(t) in `MI_FNN.ipynb` where I recovered the embedding parameters that minimize computational complexity and dimensionality of the input ($\tau = 17$ and k = 3).
+
+<br>
+(...)
