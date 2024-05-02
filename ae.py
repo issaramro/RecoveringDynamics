@@ -80,33 +80,34 @@ class Autoencoder(nn.Module):
 
         return torch.cat(library, dim=1)
     
-    def SINDy_num(self, x):
+    
+    def SINDy_num(self, t, x):
         dxdt = torch.matmul(self.phi(x), self.coefficients)
-        return dxdt
+        return dxdt 
     
     def integrate(self, x0, t):
         try:
-            x_pred = odeint_torch(self.SINDy_num, x0, t) 
+            x_p = odeint_torch(self.SINDy_num, x0, t) 
         except AssertionError as error:
             print(f"Caught an error while integrating model: {error}\
                   \n This might mean that the model is numerically unstable.")
             return None 
-        return x_pred
+        return x_p
     
     
     def loss(self, v, dvdt, criterion):
-
         with torch.autograd.enable_grad():
             x = self.encoder(v)
             v_bar = self.decoder(x)
 
+        time = torch.tensor(np.linspace(0, (np.pi/100)*len(x), len(x), endpoint=False),requires_grad=False, dtype=torch.float32)
         loss1 = criterion(v_bar, v)*self.l['l1']
         loss2 = criterion(x[:, 0], v[:, 0])*self.l['l2']
         loss = loss1 + loss2
 
         if self.l['l3'] > 0 or self.l['l4'] > 0:
 
-            dxdt_SINDy = self.SINDy_num(x)
+            dxdt_SINDy = self.SINDy_num(time, x)
 
             with torch.autograd.enable_grad():
                 dxdv = jacobian(x, v)
@@ -126,8 +127,8 @@ class Autoencoder(nn.Module):
             loss += loss5
 
         if self.l['l6'] > 0:
-            x_pred = self.integrate([x[0,0], x[0,1], x[0,2]], torch.tensor(np.linspace(0, (np.pi/100)*len(x), len(x), endpoint=False), requires_grad=False, dtype=torch.float32))
-            if x_pred is not None:
+            x_pred = self.integrate(x[0].view(-1,3), time)
+            if x_pred is not None:  
                 x_first = x_pred[:,0]
                 n = len(x_first)
                 x1 = x_first[0: n - 2*self.tau]
