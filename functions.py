@@ -12,6 +12,10 @@ def Rossler(X, t, P):
     x, y, z = X
     return - y - z, x + a*y, b - c*z + x*z
 
+def LV(X, t,P):
+    x, y = X
+    b1, b2, a12, a21 = P
+    return b1*x - a12*x*y, a21*x*y - b2*y
 
 def Solution(func, x0, t, P):
     return odeint(func, x0, t, args = (P,)).T
