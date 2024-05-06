@@ -104,7 +104,7 @@ def plot(xs, ys, zs, v1, v2, v3, x_ae, y_ae, z_ae):
     ax3d.set_ylabel("y")
     ax3d.set_zlabel("z")
     ax3d.legend()
-    plt.title("The reconstructed Rossler attractor")
+    # plt.title("The reconstructed Rossler attractor")
     plt.tight_layout()
     plt.show()
     fig3, ax3 = plt.subplots(1, 3, figsize=(10, 9), subplot_kw={'projection': '3d'})
